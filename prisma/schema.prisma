@@ -1,0 +1,51 @@
+// schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+}
+
+model User {
+  id                Int               @id @default(autoincrement())
+  name              String
+  phoneNumber       String            @unique
+  isCoach           Boolean           @default(false)
+  // Relationships
+  availabilitySlots AvailabilitySlot[] @relation("UserAvailabilitySlots")
+  bookingsAsStudent Booking[]          @relation("UserBookingsAsStudent")
+  bookingsAsCoach   Booking[]          @relation("UserBookingsAsCoach")
+  // Removed callReviews field as it's not directly related to User in this context
+}
+
+model AvailabilitySlot {
+  id        Int      @id @default(autoincrement())
+  startTime DateTime
+  endTime   DateTime
+  coachId   Int
+  booking   Booking? @relation("SlotBooking")
+  coach     User     @relation("UserAvailabilitySlots", fields: [coachId], references: [id])
+}
+
+model Booking {
+  id               Int          @id @default(autoincrement())
+  slotId           Int          @unique
+  studentId        Int
+  coachId          Int
+  callReview       CallReview?  @relation("BookingCallReview")
+  availabilitySlot AvailabilitySlot @relation("SlotBooking", fields: [slotId], references: [id])
+  student          User            @relation("UserBookingsAsStudent", fields: [studentId], references: [id])
+  coach            User            @relation("UserBookingsAsCoach", fields: [coachId], references: [id])
+}
+
+model CallReview {
+  id          Int     @id @default(autoincrement())
+  satisfaction Int    // Satisfaction score 1-5
+  notes       String // Free-form notes from the coach
+  bookingId   Int    @unique
+  booking     Booking @relation("BookingCallReview", fields: [bookingId], references: [id])
+}
