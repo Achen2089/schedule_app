@@ -1,62 +1,35 @@
-import React from "react"
-import { GetStaticProps } from "next"
-import Layout from "../components/Layout"
-import Post, { PostProps } from "../components/Post"
+import React, { useState } from 'react';
+import { useRouter } from 'next/router';
 import prisma from '../lib/prisma';
 
+const Home: React.FC = () => {
+  const router = useRouter();
+  const [role, setRole] = useState<string>('');
 
-export const getStaticProps: GetStaticProps = async () => {
-  const feed = [
-    {
-      id: "1",
-      title: "Prisma is the perfect ORM for Next.js",
-      content: "[Prisma](https://github.com/prisma/prisma) and Next.js go _great_ together!",
-      published: false,
-      author: {
-        name: "Nikolas Burk",
-        email: "burk@prisma.io",
-      },
-    },
-  ]
-  return { 
-    props: { feed }, 
-    revalidate: 10 
-  }
-}
+  const handleRoleSelection = (selectedRole: string) => {
+    setRole(selectedRole);
+    // Redirect based on role selection
+    if (selectedRole === 'coach') {
+      router.push('/coach');
+    } else if (selectedRole === 'student') {
+      router.push('/student');
+    }
+  };
 
-type Props = {
-  feed: PostProps[]
-}
-
-const Blog: React.FC<Props> = (props) => {
   return (
-    <Layout>
-      <div className="page">
-        <h1>Public Feed</h1>
-        <main>
-          {props.feed.map((post) => (
-            <div key={post.id} className="post">
-              <Post post={post} />
-            </div>
-          ))}
-        </main>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '50px' }}>
+      <h1>Welcome to Stepful</h1>
+      <p>Select your role to continue:</p>
+      <div>
+        <button onClick={() => handleRoleSelection('coach')} style={{ marginRight: '10px', padding: '10px 20px', cursor: 'pointer' }}>
+          Coach
+        </button>
+        <button onClick={() => handleRoleSelection('student')} style={{ padding: '10px 20px', cursor: 'pointer' }}>
+          Student
+        </button>
       </div>
-      <style jsx>{`
-        .post {
-          background: white;
-          transition: box-shadow 0.1s ease-in;
-        }
+    </div>
+  );
+};
 
-        .post:hover {
-          box-shadow: 1px 1px 3px #aaa;
-        }
-
-        .post + .post {
-          margin-top: 2rem;
-        }
-      `}</style>
-    </Layout>
-  )
-}
-
-export default Blog
+export default Home;
