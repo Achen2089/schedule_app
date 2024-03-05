@@ -16,9 +16,15 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
     const upcomingSlots = await prisma.availabilitySlot.findMany({
       where: {
         coachId: Number(coachId),
-        // Assuming you want to filter by date to get only future slots
         startTime: {
           gt: new Date(),
+        },
+      },
+      include: {
+        booking: {
+          include: {
+            student: true, // Assuming 'student' is the relation name in your Booking model to User model
+          },
         },
       },
     });
