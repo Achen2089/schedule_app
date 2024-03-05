@@ -8,11 +8,19 @@ const prisma = new PrismaClient();
 export default async function handle(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
     const { slotId, studentId } = req.body;
+    // Parse `slotId` and `studentId` from string to integer
+    const parsedSlotId = parseInt(slotId, 10);
+    const parsedStudentId = parseInt(studentId, 10);
+
+    // Basic validation for parsing
+    if (isNaN(parsedSlotId) || isNaN(parsedStudentId)) {
+      return res.status(400).json({ message: 'Slot ID and student ID must be valid integers.' });
+    }
 
     try {
       // Check if the slot is already booked
       const existingBooking = await prisma.booking.findUnique({
-        where: { slotId },
+        where: { slotId: parsedSlotId },
       });
 
       if (existingBooking) {
@@ -22,10 +30,10 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
       // Create the booking
       const booking = await prisma.booking.create({
         data: {
-          slotId,
-          studentId,
+          slotId: parsedSlotId,
+          studentId: parsedStudentId,
           // Assume the coachId is obtained from the slot itself
-          coachId: (await prisma.availabilitySlot.findUnique({ where: { id: slotId } }))?.coachId,
+          coachId: (await prisma.availabilitySlot.findUnique({ where: { id: parsedSlotId } }))?.coachId,
         },
       });
 
