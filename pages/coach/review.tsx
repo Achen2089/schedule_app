@@ -7,7 +7,7 @@ import { useRouter } from 'next/router';
 const ReviewCalls = () => {
   const [pastReviews, setPastReviews] = useState([]);
   const router = useRouter();
-  const { coachId } = router.query; // Assuming coachId is passed as a query parameter
+  const { coachId } = router.query; 
 
   useEffect(() => {
     fetchPastReviews();
