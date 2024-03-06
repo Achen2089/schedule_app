@@ -1,6 +1,6 @@
 # Scheduling App for Stepful 
 
-Schedule App is a full-stack application built with Next.js, React, Typescript, and PostgreSQL. It provides a platform for coaches and students to interact, book sessions, and review calls.
+Schedule App is a full-stack application built with Next.js, React, Typescript, PostgreSQL, and Prisma. It provides a platform for coaches and students to interact, book sessions, and review calls.
 
 ## Features
 
