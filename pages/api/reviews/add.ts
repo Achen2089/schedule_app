@@ -35,7 +35,7 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
         data: {
           satisfaction,
           notes,
-          bookingId, // This should match an existing `id` in the `Booking` table
+          bookingId, 
         },
       });
 

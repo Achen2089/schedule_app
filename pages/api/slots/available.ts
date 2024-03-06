@@ -14,7 +14,7 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
         booking: null, // Filters slots not linked to a booking
       },
       include: {
-        coach: true, // Optionally include coach details
+        coach: true, 
       },
     });
 

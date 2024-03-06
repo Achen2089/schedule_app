@@ -29,7 +29,6 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
         },
       });
       
-
       if (reviews.length === 0) {
         return res.status(404).json({ message: 'No reviews found for this coach.' });
       }

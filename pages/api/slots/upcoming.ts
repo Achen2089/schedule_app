@@ -23,7 +23,7 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
       include: {
         booking: {
           include: {
-            student: true, // Assuming 'student' is the relation name in your Booking model to User model
+            student: true, 
             callReview: true
           },
         },
