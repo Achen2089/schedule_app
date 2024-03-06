@@ -13,13 +13,22 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
       const reviews = await prisma.callReview.findMany({
         where: {
           booking: {
-            coachId: Number(coachId),
+            coach: {
+              id: Number(coachId),
+            },
           },
         },
         include: {
-          booking: true, // Include booking details
+          booking: {
+            include: {
+              coach: true,
+              student: true,
+              availabilitySlot: true
+            },
+          },
         },
       });
+      
 
       if (reviews.length === 0) {
         return res.status(404).json({ message: 'No reviews found for this coach.' });
@@ -27,6 +36,7 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
 
       res.status(200).json(reviews);
     } catch (error) {
+      console.log('Failed to fetch past reviews:', error);
       res.status(500).json({ error: 'Unable to retrieve past reviews.' });
     }
   } else {

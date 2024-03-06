@@ -6,9 +6,11 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 const prisma = new PrismaClient();
 
 export default async function handle(req: NextApiRequest, res: NextApiResponse) {
+  const { coachId } = req.query;
   try {
     const availableSlots = await prisma.availabilitySlot.findMany({
       where: {
+        coachId: Number(coachId),
         booking: null, // Filters slots not linked to a booking
       },
       include: {
