@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Link from 'next/link';
 
 const CoachDashboard = () => {
   const [date, setDate] = useState('');
@@ -20,12 +21,11 @@ const CoachDashboard = () => {
     setLoading(true);
     try {
       const [availableResponse, bookedResponse] = await Promise.all([
-        axios.get('/api/slots/available'),
+        axios.get('/api/slots/available', { params: { coachId }}),
         axios.get('/api/slots/upcoming', { params: { coachId } }),
       ]);
       setAvailableSlots(availableResponse.data);
-      setBookedSlots(bookedResponse.data.filter(slot => slot.booking));
-      setMessage('');
+      setBookedSlots(bookedResponse.data.filter(slot => slot.booking && !(slot.booking.callReview && Object.keys(slot.booking.callReview).length)));
     } catch (error) {
       console.error('Error fetching slots:', error);
       setMessage('Failed to fetch slots.');
@@ -103,6 +103,30 @@ const CoachDashboard = () => {
     }
   };
 
+  const markAsCompleted = async (bookingId) => {
+    const satisfaction = prompt('Enter student satisfaction score (1-5):');
+    const notes = prompt('Enter any notes about the call:');
+    
+    if (!satisfaction || !notes) {
+      alert('Satisfaction score and notes are required.');
+      return;
+    }
+  
+    try {
+      await axios.post('/api/reviews/add', { 
+        bookingId, // Ensure this matches the expected parameter in your API
+        satisfaction: parseInt(satisfaction, 10), 
+        notes 
+      });
+
+      alert('Call marked as completed successfully.');
+      fetchSlots(); // You might need to adjust this call according to your application's logic
+    } catch (error) {
+      console.error('Error marking call as completed:', error);
+      alert('Failed to mark call as completed.');
+    }
+  };
+
   return (
     <div>
       <h1>Coach Dashboard</h1>
@@ -131,10 +155,14 @@ const CoachDashboard = () => {
             {new Date(slot.startTime).toLocaleDateString()} - 
             {new Date(slot.startTime).toLocaleTimeString()} to 
             {new Date(slot.endTime).toLocaleTimeString()} - 
-            Booked by {slot.booking.student.name}
+            Booked by {slot.booking.student.name} ({slot.booking.student.phoneNumber})
+            <button onClick={() => markAsCompleted(slot.booking.id)}>Mark as Completed</button>
           </li>
         ))}
       </ul>
+      <Link href={{ pathname: '/coach/review', query: { coachId: coachId }}}>
+        <a><button>Review Calls</button></a>
+      </Link>
     </div>
   );
 };
