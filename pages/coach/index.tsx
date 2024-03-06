@@ -12,6 +12,7 @@ const CoachDashboard = () => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const coachId = 1; // Placeholder coachId
+  const coachName = "Johnson" // Placeholder coachName
 
   useEffect(() => {
     fetchSlots();
@@ -76,7 +77,6 @@ const CoachDashboard = () => {
       return;
     }
   
-    // Proceed with adding the slot if there's no overlap
     try {
       await axios.post('/api/slots/add', { coachId, startTime, endTime });
       fetchSlots(); // Refresh the slots lists
@@ -114,13 +114,13 @@ const CoachDashboard = () => {
   
     try {
       await axios.post('/api/reviews/add', { 
-        bookingId, // Ensure this matches the expected parameter in your API
+        bookingId, 
         satisfaction: parseInt(satisfaction, 10), 
         notes 
       });
 
       alert('Call marked as completed successfully.');
-      fetchSlots(); // You might need to adjust this call according to your application's logic
+      fetchSlots(); 
     } catch (error) {
       console.error('Error marking call as completed:', error);
       alert('Failed to mark call as completed.');
@@ -129,7 +129,7 @@ const CoachDashboard = () => {
 
   return (
     <div>
-      <h1>Coach Dashboard</h1>
+      <h1>Coach {coachName}'s Dashboard</h1>
       {loading && <p>Loading...</p>}
       {message && <p>{message}</p>}
       <form onSubmit={addSlot}>

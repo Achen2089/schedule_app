@@ -7,8 +7,8 @@ const StudentDashboard = () => {
   const [selectedCoach, setSelectedCoach] = useState('');
   const [availableSlots, setAvailableSlots] = useState([]);
   const [selectedSlot, setSelectedSlot] = useState('');
-  const studentId = '3'; // This should be dynamically fetched based on the authenticated user
-  const studentName = 'Lee'
+  const studentId = '3'; // Placeholder studentId
+  const studentName = 'Lee' // Placeholder studentName
   
   useEffect(() => {
     fetchCoaches();
@@ -27,7 +27,7 @@ const StudentDashboard = () => {
   const fetchStudentBookings = async () => {
     try {
       const { data } = await axios.get(`/api/bookings/student`, { params: { studentId}});
-      setBookings(data);
+      setBookings(data.filter(booking => booking.callReview && Object.keys(booking.callReview).length));
     } catch (error) {
       console.error('Error fetching student bookings:', error);
     }
@@ -55,7 +55,7 @@ const StudentDashboard = () => {
         studentId,
       });
       alert('Booking successful!');
-      fetchStudentBookings(); // Refresh the student's bookings list
+      fetchStudentBookings(); 
     } catch (error) {
       console.error('Error creating booking:', error);
       alert('Failed to create booking.');
@@ -64,7 +64,7 @@ const StudentDashboard = () => {
 
   return (
     <div>
-      <h1>Student Dashboard</h1>
+      <h1>Student {studentName}'s Dashboard</h1>
       <h2>Your Bookings</h2>
       <ul>
         {bookings.map(({ id, availabilitySlot, coach }) => (
