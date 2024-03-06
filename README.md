@@ -1,3 +1,44 @@
-# Fullstack Authentication Example with Next.js and NextAuth.js
+# Scheduling App for Stepful 
 
-This is the starter project for the fullstack tutorial with Next.js and Prisma. You can find the final version of this project in the [`final`](https://github.com/prisma/blogr-nextjs-prisma/tree/final) branch of this repo.
+Schedule App is a full-stack application built with Next.js, React, Typescript, and PostgreSQL. It provides a platform for coaches and students to interact, book sessions, and review calls.
+
+## Features
+
+- Role-based access for coaches and students
+- Coaches can add their availability
+- Students can book available slots
+- Coaches can review calls
+
+## Getting Started
+
+First, install the dependencies:
+
+```sh
+npm install
+```
+
+Then, run the development server:
+
+```sh
+npm run dev
+```
+
+Open http://localhost:3000 with your browser to see the result.
+
+To seed the database with initial data, run:
+
+```sh
+npm run seed
+```
+
+To build the project, run:
+
+```sh
+npm run build
+```
+
+To run the project, use:
+
+```sh
+npm run start
+```
